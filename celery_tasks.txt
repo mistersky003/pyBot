@@ -1,0 +1,26 @@
+[Unit]
+Description=Service for Telegram bot main. From user telebot
+After=network.target
+# Для запуска сервиса нужен запущенный сервис MySQL (т.к. работаем с базой данн>
+#After=mysql.service
+#Requires=mysql.service
+
+WantedBy=multi-user.target
+
+[Service]
+# Даем знать systemd, что этот сервис представляет из себя лишь 1 процесс.
+# Ожидается, что процесс, настроенный с помощью ExecStart= является основным пр>
+Type=simple
+# Устанавливаем рабочую дирректорию службы
+WorkingDirectory=/root/TelegramBotAdmin16.09.2022
+# Указаываем пользователя и группу для работы службы
+User=root
+Group=root
+# Должна ли служба считаться активной, даже если все ее процессы завершены
+RemainAfterExit=no
+# Выполнить эту команду при запуске сервиса.
+ExecStart=celery -A celery_tasks worker
+# Говорим, что нужно перезапускать сервис, если вдруг он умер
+Restart=on-failure
+# Таймаут на включение и выключение
+TimeoutSec=60
